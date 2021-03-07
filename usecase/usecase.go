@@ -50,7 +50,7 @@ func (u *usecase) run(ctx context.Context, channel, user string, args []string) 
 			return c.Execute(ctx, channel, user, args[1:])
 		}
 	}
-	return nil
+	return u.repo.SlackAPI().Reply(ctx, channel, user, "何言ってるかわかんないよ…(>﹏<;;)")
 }
 
 func (u *usecase) err(ctx context.Context, channel, user string, err error) {
