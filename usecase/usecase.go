@@ -36,7 +36,7 @@ func NewUsecase(repo repository.Repository) Usecase {
 func (u *usecase) Run(ctx context.Context, channel, user string, args []string) {
 	defer func() {
 		if err := recover(); err != nil {
-			u.err(ctx, channel, user, fmt.Errorf("panic: %w", err))
+			u.err(ctx, channel, user, fmt.Errorf("panic: %v", err))
 		}
 	}()
 	if err := u.run(ctx, channel, user, args); err != nil {

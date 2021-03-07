@@ -125,7 +125,7 @@ func (f *flickrSearcher) RandomSearch(ctx context.Context, keywords []string) (r
 
 	var imageURL string
 	for i := 0; i < 3; i++ {
-		res, err = f.search(ctx, keywords, rand.Intn(pageRange)+1)
+		res, err = f.search(ctx, keywords, rand.Intn(pageRange+1))
 		if err != nil {
 			return nil, err
 		}
