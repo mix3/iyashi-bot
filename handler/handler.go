@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strings"
 
 	"github.com/mix3/iyashi-bot/config"
 	"github.com/mix3/iyashi-bot/usecase"
@@ -80,7 +81,9 @@ func (h *handler) Index(w http.ResponseWriter, r *http.Request) {
 		switch ev := innerEvent.Data.(type) {
 		case *slackevents.AppMentionEvent:
 			log.Printf("[INFO] channel=%s user=%s text=%s", ev.Channel, ev.User, ev.Text)
-			args, err := shellwords.Parse(re.ReplaceAllString(ev.Text, "$1"))
+			text := strings.ReplaceAll(ev.Text, "\u00A0", " ") // コピペするとスペースが non-breaking space になるっぽいので変換
+			text = re.ReplaceAllString(text, "$1")             // 自分宛の文言 @<XXXXXX> 削る
+			args, err := shellwords.Parse(text)
 			if err != nil {
 				log.Printf("[ERROR] %s", err)
 				return
