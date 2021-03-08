@@ -1,0 +1,17 @@
+name: trigger
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        curl -X POST \
+          -H "Authorization: token ${{ secrets.PERSONAL_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          ${{ secrets.DISPATCH_API }} \
+          -d '{"ref": "main"}'
