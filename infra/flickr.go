@@ -78,10 +78,10 @@ func (f *flickrSearcher) search(ctx context.Context, keywords []string, page int
 
 type flickrSearchResponse struct {
 	Photos struct {
-		Page    int    `json:"page"`
-		Pages   int    `json:"pages"`
-		PerPage int    `json:"perpage"`
-		Total   string `json:"total"`
+		Page    int `json:"page"`
+		Pages   int `json:"pages"`
+		PerPage int `json:"perpage"`
+		Total   int `json:"total"`
 		Photo   []struct {
 			Id       string `json:"id"`
 			Owner    string `json:"owner"`
