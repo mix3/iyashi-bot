@@ -80,6 +80,15 @@ func (h *handler) Index(w http.ResponseWriter, r *http.Request) {
 		innerEvent := eventsAPIEvent.InnerEvent
 		switch ev := innerEvent.Data.(type) {
 		case *slackevents.AppMentionEvent:
+			var msg Msg
+			if err := json.Unmarshal(body, &msg); err != nil {
+				log.Printf("[ERROR] %s", err)
+				return
+			}
+			if msg.IsEdited() {
+				log.Printf("[INFO] Skipped because edited")
+				return
+			}
 			log.Printf("[INFO] channel=%s user=%s text=%s", ev.Channel, ev.User, ev.Text)
 			text := strings.ReplaceAll(ev.Text, "\u00A0", " ") // コピペするとスペースが non-breaking space になるっぽいので変換
 			text = re.ReplaceAllString(text, "$1")             // 自分宛の文言 @<XXXXXX> 削る
@@ -92,4 +101,14 @@ func (h *handler) Index(w http.ResponseWriter, r *http.Request) {
 			h.usecase.Run(r.Context(), ev.Channel, ev.User, args)
 		}
 	}
+}
+
+type Msg struct {
+	Event struct {
+		Edited *struct{} `json:"edited,omitempty"`
+	} `json:"event"`
+}
+
+func (m *Msg) IsEdited() bool {
+	return m.Event.Edited != nil
 }
